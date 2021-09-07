@@ -294,7 +294,12 @@ class BotDiscord(discord.Client):
                 await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
                 return
 
-            await message.channel.send(ReadBase(message.guild.id))
+            listID = ReadBase(message.guild.id)
+            if listID != "":
+                await message.channel.send(listID)
+
+            else:
+                await message.channel.send("<@"+str(message.author.id)+">, ID list is empty")
 
             return
 
