@@ -35,6 +35,9 @@ config.read("./data/config")
 regCmd = config["cmd"]["Prefix"]+"reg"
 regCmdLen = len(regCmd)+1
 
+loginCmd = config["cmd"]["Prefix"]+"login"
+loginCmdLen = len(regCmd)+1
+
 gencodeCmd = config["cmd"]["Prefix"]+"gencode"
 gencodeCmdLen = len(gencodeCmd)+1
 
@@ -82,6 +85,10 @@ helpTxt = '''
 **'''+regCmd+'''** SECRET_WORD
 The secret word should be given to you by the administrator.
 It can be an internal nickname or a randomly generated code.
+
+**'''+loginCmd+'''**
+Allows a trusted user to log in without requiring a secret word.
+The list of trusted users is defined by the bot administrator globally.
 
 *Roles:*
 **'''+config["role"]["Admin"]+'''** - user with this role can configure the bot
@@ -156,6 +163,22 @@ def UseInviteCode(serverID, inviteCode):
     return result, nick
 
 
+def GetTrustedUser(userID):
+    userIDStr = str(userID)
+
+    if not os.path.isfile("./data/trusted_users"):
+        return False, "", ""
+
+    with open("./data/trusted_users", "r") as file:
+        for line in file.read().splitlines():
+            splitLine = line.split("####")
+
+        if splitLine[0] == userIDStr:
+            return True, splitLine[1], splitLine[2]
+
+    return False, "", ""
+
+
 def WriteAdminChannel(serverID, channelID):
     serverDir = os.path.join("./data", str(serverID))
     if not os.path.isdir(serverDir):
@@ -223,8 +246,25 @@ class BotDiscord(discord.Client):
                 await message.channel.send("<@"+str(message.author.id)+">, wrong secret word")
 
             return
-                
 
+        # ## LOGIN ##
+        if message.content.startswith(loginCmd):
+            result, userRole, nick = GetTrustedUser(message.author.id)
+
+            if result == True:
+                roles = message.guild.roles
+                for role in roles:
+                    if role.name == userRole:
+                        await message.author.edit(roles=[role], reason=None)
+                        break
+
+                await message.author.send(nick+", welcome to the "+message.guild.name+" server")
+                await message.author.edit(nick=nick, reason=None)
+
+            else:
+                await message.channel.send("<@"+str(message.author.id)+">, you are not a trusted user")
+
+            return
 
         
         # ## GENCODE ##
@@ -295,7 +335,7 @@ class BotDiscord(discord.Client):
                 return
 
             listID = ReadBase(message.guild.id)
-            if listID != "":
+            if listID != []:
                 await message.channel.send(listID)
 
             else:
