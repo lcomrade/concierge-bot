@@ -213,200 +213,205 @@ class BotDiscord(discord.Client):
             return
 
 
-        # Read the message
-        # ## HELP ##
-        if message.content.startswith(helpCmd):
-            await message.channel.send(helpTxt)
-            return
-
-        
-        # ## REG ##
-        if message.content.startswith(regCmd):
-            arg = message.content[regCmdLen:]
-            
-            # Sinatxis check
-            if arg == "" or arg == " ":
+        try:
+            # Read the message
+            # ## HELP ##
+            if message.content.startswith(helpCmd):
                 await message.channel.send(helpTxt)
                 return
 
             
-            result, nick = UseInviteCode(message.guild.id, arg)
-            
-            if result == True:
-                roles = message.guild.roles
-                for role in roles:
-                    if role.name == config["role"]["Reg"]:
-                        await message.author.edit(roles=[role], reason=None)
-                        break
-
-                await message.author.send(nick+", welcome to the "+message.guild.name+" server")
-                await message.author.edit(nick=nick, reason=None)
-
-            else:
-                await message.channel.send("<@"+str(message.author.id)+">, wrong secret word")
-
-            return
-
-        # ## LOGIN ##
-        if message.content.startswith(loginCmd):
-            result, userRole, nick = GetTrustedUser(message.author.id)
-
-            if result == True:
-                roles = message.guild.roles
-                for role in roles:
-                    if role.name == userRole:
-                        await message.author.edit(roles=[role], reason=None)
-                        break
-
-                await message.author.send(nick+", welcome to the "+message.guild.name+" server")
-                await message.author.edit(nick=nick, reason=None)
-
-            else:
-                await message.channel.send("<@"+str(message.author.id)+">, you are not a trusted user")
-
-            return
-
-        
-        # ## GENCODE ##
-        if message.content.startswith(gencodeCmd):
-            arg = message.content[gencodeCmdLen:]
-            
-            # Sinatxis check
-            if arg == "" or arg == " ":
-                await message.channel.send(helpTxt)
-                return
-
-            # Role check
-            if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                await message.channel.send("<@"+str(message.author.id)+">, permission denied")
-                return
-
-            # Channel check
-            if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
-                return
-
-
-            for line in arg.split(";; "):
-                inviteCode = GenInviteCode()
-                WriteBase(message.guild.id, line, inviteCode)
-
-                await message.channel.send(message.guild.name+": "+gencodeCmd+" "+line+" : "+inviteCode)
-
-
-        # ## ADDUSER ##
-        if message.content.startswith(adduserCmd):
-            arg = message.content[adduserCmdLen:]
-            
-            # Sinatxis check
-            if arg == "" or arg == " ":
-                await message.channel.send(helpTxt)
-                return
-
-            # Role check
-            if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                await message.channel.send("<@"+str(message.author.id)+">, permission denied")
-                return
-
-            # Channel check
-            if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
-                return
-
-
-            for line in arg.split(";; "):
-                WriteBase(message.guild.id, line, line)
+            # ## REG ##
+            if message.content.startswith(regCmd):
+                arg = message.content[regCmdLen:]
                 
-                await message.channel.send(message.guild.name+": "+adduserCmd+" "+line)
+                # Sinatxis check
+                if arg == "" or arg == " ":
+                    await message.channel.send(helpTxt)
+                    return
 
-            return
-
-
-        # ## LIST ##
-        if message.content.startswith(listidCmd):
-            # Role check
-            if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                await message.channel.send("<@"+str(message.author.id)+">, permission denied")
-                return
-
-            # Channel check
-            if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
-                return
-
-            listID = ReadBase(message.guild.id)
-            if listID != []:
-                await message.channel.send(listID)
-
-            else:
-                await message.channel.send("<@"+str(message.author.id)+">, ID list is empty")
-
-            return
-
-
-        # ## DELID ##
-        if message.content.startswith(delidCmd):
-            arg = message.content[delidCmdLen:]
-            
-            # Sinatxis check
-            if arg == "" or arg == " ":
-                await message.channel.send(helpTxt)
-                return
-
-            # Role check
-            if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                await message.channel.send("<@"+str(message.author.id)+">, permission denied")
-                return
-
-            # Channel check
-            if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
-                return
-
-
-            for line in arg.split(";; "):
-                result, nick = UseInviteCode(message.guild.id, line)
+                
+                result, nick = UseInviteCode(message.guild.id, arg)
+                
                 if result == True:
-                    await message.channel.send(message.guild.name+": "+delidCmd+" "+line)
+                    roles = message.guild.roles
+                    for role in roles:
+                        if role.name == config["role"]["Reg"]:
+                            await message.author.edit(roles=[role], reason=None)
+                            break
+
+                    await message.author.send(nick+", welcome to the "+message.guild.name+" server")
+                    await message.author.edit(nick=nick, reason=None)
 
                 else:
-                    await message.channel.send(message.guild.name+": "+delidCmd+" "+line+": not found")
+                    await message.channel.send("<@"+str(message.author.id)+">, wrong secret word")
 
-            return
-
-
-        # ## set-admin-channel ##
-        if message.content.startswith(setAdminChannelCmd):
-            # Role check
-            if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                await message.channel.send("<@"+str(message.author.id)+">, permission denied")
                 return
 
-            WriteAdminChannel(message.guild.id, message.channel.id)
-            await message.channel.send("Channel **"+message.channel.name+"** is now used for **"+str(self.user)+"** bot administration")
+            # ## LOGIN ##
+            if message.content.startswith(loginCmd):
+                result, userRole, nick = GetTrustedUser(message.author.id)
 
-            return
+                if result == True:
+                    roles = message.guild.roles
+                    for role in roles:
+                        if role.name == userRole:
+                            await message.author.edit(roles=[role], reason=None)
+                            break
 
+                    await message.author.send(nick+", welcome to the "+message.guild.name+" server")
+                    await message.author.edit(nick=nick, reason=None)
 
-        # ## full-erase-data ##
-        if message.content.startswith(fullEraseDataCmd):
-            # Role check
-            if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                else:
+                    await message.channel.send("<@"+str(message.author.id)+">, you are not a trusted user")
+
                 return
 
-            # Channel check
-            if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+            
+            # ## GENCODE ##
+            if message.content.startswith(gencodeCmd):
+                arg = message.content[gencodeCmdLen:]
+                
+                # Sinatxis check
+                if arg == "" or arg == " ":
+                    await message.channel.send(helpTxt)
+                    return
+
+                # Role check
+                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    return
+
+                # Channel check
+                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    return
+
+
+                for line in arg.split(";; "):
+                    inviteCode = GenInviteCode()
+                    WriteBase(message.guild.id, line, inviteCode)
+
+                    await message.channel.send(message.guild.name+": "+gencodeCmd+" "+line+" : "+inviteCode)
+
+
+            # ## ADDUSER ##
+            if message.content.startswith(adduserCmd):
+                arg = message.content[adduserCmdLen:]
+                
+                # Sinatxis check
+                if arg == "" or arg == " ":
+                    await message.channel.send(helpTxt)
+                    return
+
+                # Role check
+                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    return
+
+                # Channel check
+                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    return
+
+
+                for line in arg.split(";; "):
+                    WriteBase(message.guild.id, line, line)
+                    
+                    await message.channel.send(message.guild.name+": "+adduserCmd+" "+line)
+
                 return
 
-            try:
-                shutil.rmtree(os.path.join("./data", str(message.guild.id)))
-                await message.channel.send("**Information** about Discord server "+message.guild.name+" has been completely **removed** from the "+str(self.user)+" bot server")
 
-            except Exception as err:
-                await message.channel.send(str(err))
-                await message.channel.send("**ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually.**")
+            # ## LIST ##
+            if message.content.startswith(listidCmd):
+                # Role check
+                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    return
+
+                # Channel check
+                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    return
+
+                listID = ReadBase(message.guild.id)
+                if listID != []:
+                    await message.channel.send(listID)
+
+                else:
+                    await message.channel.send("<@"+str(message.author.id)+">, ID list is empty")
+
+                return
+
+
+            # ## DELID ##
+            if message.content.startswith(delidCmd):
+                arg = message.content[delidCmdLen:]
+                
+                # Sinatxis check
+                if arg == "" or arg == " ":
+                    await message.channel.send(helpTxt)
+                    return
+
+                # Role check
+                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    return
+
+                # Channel check
+                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    return
+
+
+                for line in arg.split(";; "):
+                    result, nick = UseInviteCode(message.guild.id, line)
+                    if result == True:
+                        await message.channel.send(message.guild.name+": "+delidCmd+" "+line)
+
+                    else:
+                        await message.channel.send(message.guild.name+": "+delidCmd+" "+line+": not found")
+
+                return
+
+
+            # ## set-admin-channel ##
+            if message.content.startswith(setAdminChannelCmd):
+                # Role check
+                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    return
+
+                WriteAdminChannel(message.guild.id, message.channel.id)
+                await message.channel.send("Channel **"+message.channel.name+"** is now used for **"+str(self.user)+"** bot administration")
+
+                return
+
+
+            # ## full-erase-data ##
+            if message.content.startswith(fullEraseDataCmd):
+                # Role check
+                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    return
+
+                # Channel check
+                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    return
+
+                try:
+                    shutil.rmtree(os.path.join("./data", str(message.guild.id)))
+                    await message.channel.send("**Information** about Discord server "+message.guild.name+" has been completely **removed** from the "+str(self.user)+" bot server")
+
+                except Exception as err:
+                    await message.channel.send(str(err))
+                    await message.channel.send("**ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually.**")
+
+
+        except discord.errors.Forbidden as err:
+            await message.channel.send("**Error:** "+str(err))
 
 
 # Main
