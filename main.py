@@ -242,6 +242,7 @@ class BotDiscord(discord.Client):
 
                     await message.author.send(nick+", welcome to the "+message.guild.name+" server")
                     await message.author.edit(nick=nick, reason=None)
+                    await message.delete()
 
                 else:
                     await message.channel.send("<@"+str(message.author.id)+">, wrong secret word")
@@ -261,6 +262,7 @@ class BotDiscord(discord.Client):
 
                     await message.author.send(nick+", welcome to the "+message.guild.name+" server")
                     await message.author.edit(nick=nick, reason=None)
+                    await message.delete()
 
                 else:
                     await message.channel.send("<@"+str(message.author.id)+">, you are not a trusted user")
