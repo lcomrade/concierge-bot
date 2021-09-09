@@ -173,8 +173,8 @@ def GetTrustedUser(userID):
         for line in file.read().splitlines():
             splitLine = line.split("####")
 
-        if splitLine[0] == userIDStr:
-            return True, splitLine[1], splitLine[2]
+            if splitLine[0] == userIDStr:
+                return True, splitLine[1], splitLine[2]
 
     return False, "", ""
 
