@@ -24,5 +24,8 @@ python3 ./main.py
 5. Send a command to the admin channel: `/set-admin-channel`
 6. To find out all the available commands, use the help: `/help`.
 
+## Documentation
+- [Global configuration](https://github.com/lcomrade/concierge-bot/blob/main/docs/global_configuration.md)
+
 ## Bugs and Suggestion
 If you find a bug or have a suggestion, create an Issue [here](https://github.com/lcomrade/concierge-bot/issues)
