@@ -98,6 +98,18 @@ Bot administrator contacts:
 *'''+config["bot"]["AdminContacts"]+'''*
 '''
 
+def ReadLocale(lang):
+    langFile = os.path.join("./locale", lang)
+
+    with open(langFile, "r") as file:
+        global locale
+        locale = dict([])
+        
+        for line in file.read().splitlines():
+            splitLine = line.split(" == ")
+            locale[splitLine[0]] = splitLine[1]
+
+
 def CheckRole(roleName, roles):
     for role in roles:
         if role.name == roleName:
@@ -240,12 +252,12 @@ class BotDiscord(discord.Client):
                             await message.author.edit(roles=[role], reason=None)
                             break
 
-                    await message.author.send(nick+", welcome to the "+message.guild.name+" server")
+                    await message.author.send(locale["{nick}, welcome to the {guild} server"].format(nick=nick, guild=message.guild.name))
                     await message.author.edit(nick=nick, reason=None)
                     await message.delete()
 
                 else:
-                    await message.channel.send("<@"+str(message.author.id)+">, wrong secret word")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["wrong secret word"])
 
                 return
 
@@ -260,12 +272,12 @@ class BotDiscord(discord.Client):
                             await message.author.edit(roles=[role], reason=None)
                             break
 
-                    await message.author.send(nick+", welcome to the "+message.guild.name+" server")
+                    await message.author.send(locale["{nick}, welcome to the {guild} server"].format(nick=nick, guild=message.guild.name))
                     await message.author.edit(nick=nick, reason=None)
                     await message.delete()
 
                 else:
-                    await message.channel.send("<@"+str(message.author.id)+">, you are not a trusted user")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["you are not a trusted user"])
 
                 return
 
@@ -281,12 +293,12 @@ class BotDiscord(discord.Client):
 
                 # Role check
                 if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
                 # Channel check
                 if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
 
@@ -308,12 +320,12 @@ class BotDiscord(discord.Client):
 
                 # Role check
                 if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
                 # Channel check
                 if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
 
@@ -329,20 +341,20 @@ class BotDiscord(discord.Client):
             if message.content.startswith(listidCmd):
                 # Role check
                 if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
                 # Channel check
                 if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
                 listID = ReadBase(message.guild.id)
-                if listID != []:
+                if listID != [] and listID != "":
                     await message.channel.send(listID)
 
                 else:
-                    await message.channel.send("<@"+str(message.author.id)+">, ID list is empty")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["ID list is empty"])
 
                 return
 
@@ -358,12 +370,12 @@ class BotDiscord(discord.Client):
 
                 # Role check
                 if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
                 # Channel check
                 if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
 
@@ -373,7 +385,7 @@ class BotDiscord(discord.Client):
                         await message.channel.send(message.guild.name+": "+delidCmd+" "+line)
 
                     else:
-                        await message.channel.send(message.guild.name+": "+delidCmd+" "+line+": not found")
+                        await message.channel.send(message.guild.name+": "+delidCmd+" "+line+": "+locale["not found"])
 
                 return
 
@@ -382,11 +394,11 @@ class BotDiscord(discord.Client):
             if message.content.startswith(setAdminChannelCmd):
                 # Role check
                 if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
                 WriteAdminChannel(message.guild.id, message.channel.id)
-                await message.channel.send("Channel **"+message.channel.name+"** is now used for **"+str(self.user)+"** bot administration")
+                await message.channel.send(locale["Channel {channelName} is now used for {selfUser} bot administration"].format(channelName=message.channel.name, selfUser=str(self.user)))
 
                 return
 
@@ -395,28 +407,30 @@ class BotDiscord(discord.Client):
             if message.content.startswith(fullEraseDataCmd):
                 # Role check
                 if CheckRole(config["role"]["Admin"], message.author.roles) == False:
-                    await message.channel.send("<@"+str(message.author.id)+">, permission denied")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
                 # Channel check
                 if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
-                    await message.channel.send("<@"+str(message.author.id)+">, this is not bot administration channel")
+                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
                 try:
                     shutil.rmtree(os.path.join("./data", str(message.guild.id)))
-                    await message.channel.send("**Information** about Discord server "+message.guild.name+" has been completely **removed** from the "+str(self.user)+" bot server")
+                    await message.channel.send(locale["Information about Discord server {guild} has been completely removed from the {selfUser} bot server"].format(guild=message.guild.name ,selfUser=str(self.user)))
 
                 except Exception as err:
                     await message.channel.send(str(err))
-                    await message.channel.send("**ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually.**")
+                    await message.channel.send(locale["ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually."])
 
 
         except discord.errors.Forbidden as err:
-            await message.channel.send("**Error:** "+str(err))
+            await message.channel.send(locale["ERROR:"]+" "+str(err))
 
 
 # Main
 if __name__ == "__main__":
+    ReadLocale(config["bot"]["Locale"])
+
     client = BotDiscord()
     client.run(config["bot"]["Token"])

@@ -14,6 +14,10 @@ Token = DISCORD_BOT_TOKEN_HERE
 # This will help people contact you in case of problems.
 AdminContacts = Jon Dyson <mymail@example.com>
 
+# The localization only affects the messages you send to Discord.
+# The localization files are stored in the ./locale dir
+Locale = en_US
+
 [cmd]
 # Each command will begin with this prefix.
 # This is to avoid conflict between multiple bots.

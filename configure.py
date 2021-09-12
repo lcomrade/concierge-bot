@@ -51,6 +51,16 @@ if __name__ == "__main__":
     print("")
 
 
+    print("The localization only affects the messages you send to Discord.")
+    print("List of available localizations:")
+    print(os.listdir("./locale"))
+    botLocale = input("Locale (en_US): ")
+    if botLocale == "":
+        botLocale = "en_US"
+    print("")
+    print("")
+
+
     # Write
     if not os.path.isdir(configDir):
         os.makedirs(configDir)
@@ -59,6 +69,7 @@ if __name__ == "__main__":
         file.write('[bot]\n')
         file.write('Token = '+token+'\n')
         file.write('AdminContacts = '+botAdminContacts+'\n')
+        file.write('Locale = '+botLocale+'\n')
         file.write('\n')
         file.write('[cmd]\n')
         file.write('Prefix = '+cmdPrefix+'\n')
