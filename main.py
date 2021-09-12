@@ -58,45 +58,6 @@ fullEraseDataCmdLen = len(fullEraseDataCmd)
 
 helpCmd = config["cmd"]["Prefix"]+"help"
 
-helpTxt = '''
-**Usage:** COMMAND [ARGUMENTS]...
-
-*Administrator commands:*
-**'''+adduserCmd+'''** INTERNAL_NICKNAME_1;; INTERNAL_NICKNAME_2...
-    Adds a user to the guest list, and his INTERNAL_NICKNAME will be used during registration
-
-**'''+gencodeCmd+'''** INTERNAL_NICKNAME_1;; INTERNAL_NICKNAME_2...
-    Generates a random code, after registration the user will be renamed according to his INTERNAL_NICKNAME
-
-**'''+listidCmd+'''**
-    Outputs the IDs of users who are allowed to register. Format: INTERNAL_NICKNAME####SECRET_WORD
-
-**'''+delidCmd+'''** SECRET_WORD_1;; SECRET_WORD_2;; SECRET_WORD_3...
-    Deletes the invitation.
-
-**'''+setAdminChannelCmd+'''**
-    Sets the current channel as a channel for administration commands. There can only be 1 such channel.
-
-**'''+fullEraseDataCmd+'''**
-    Deletes information about this Discord server from the server on which the bot is running.
-    If you just kick the bot from the server this information will not be deleted.
-
-*User commands:*
-**'''+regCmd+'''** SECRET_WORD
-The secret word should be given to you by the administrator.
-It can be an internal nickname or a randomly generated code.
-
-**'''+loginCmd+'''**
-Allows a trusted user to log in without requiring a secret word.
-The list of trusted users is defined by the bot administrator globally.
-
-*Roles:*
-**'''+config["role"]["Admin"]+'''** - user with this role can configure the bot
-**'''+config["role"]["Reg"]+'''** - this role is assigned to the user after successful registration
-
-Bot administrator contacts:
-*'''+config["bot"]["AdminContacts"]+'''*
-'''
 
 def ReadLocale(lang):
     langFile = os.path.join("./locale", lang)
@@ -108,6 +69,19 @@ def ReadLocale(lang):
         for line in file.read().splitlines():
             splitLine = line.split(" == ")
             locale[splitLine[0]] = splitLine[1]
+
+
+    with open(langFile+"_help", "r") as file:
+        global helpTxt
+
+        helpTxt = file.read().format(adduserCmd=adduserCmd, gencodeCmd=gencodeCmd,
+        listidCmd=listidCmd, delidCmd=delidCmd,
+        setAdminChannelCmd=setAdminChannelCmd,
+        fullEraseDataCmd=fullEraseDataCmd,
+        regCmd=regCmd, loginCmd=loginCmd,
+        roleAdmin=config["role"]["Admin"],
+        roleReg=config["role"]["Reg"],
+        botAdminContacts=config["bot"]["AdminContacts"])
 
 
 def CheckRole(roleName, roles):
