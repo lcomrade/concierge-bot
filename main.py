@@ -31,32 +31,42 @@ import discord
 config = configparser.ConfigParser()
 config.read("./data/config")
 
+botToken = config["bot"]["Token"]
+botAdminContacts = config["bot"]["AdminContacts"]
+botLocale = config["bot"]["Locale"]
+
+cmdPrefix = config["cmd"]["Prefix"]
+
+roleAdmin = config["role"]["Admin"]
+roleReg = config["role"]["Reg"]
+
+
 # Set bot commands
-regCmd = config["cmd"]["Prefix"]+"reg"
+regCmd = cmdPrefix+"reg"
 regCmdLen = len(regCmd)+1
 
-loginCmd = config["cmd"]["Prefix"]+"login"
+loginCmd = cmdPrefix+"login"
 loginCmdLen = len(regCmd)+1
 
-gencodeCmd = config["cmd"]["Prefix"]+"gencode"
+gencodeCmd = cmdPrefix+"gencode"
 gencodeCmdLen = len(gencodeCmd)+1
 
-adduserCmd = config["cmd"]["Prefix"]+"adduser"
+adduserCmd = cmdPrefix+"adduser"
 adduserCmdLen = len(adduserCmd)+1
 
-listidCmd = config["cmd"]["Prefix"]+"listid"
+listidCmd = cmdPrefix+"listid"
 listidCmdLen = len(listidCmd)
 
-delidCmd = config["cmd"]["Prefix"]+"delid"
+delidCmd = cmdPrefix+"delid"
 delidCmdLen = len(delidCmd)+1
 
-setAdminChannelCmd = config["cmd"]["Prefix"]+"set-admin-channel"
+setAdminChannelCmd = cmdPrefix+"set-admin-channel"
 setAdminChannelCmdLen = len(setAdminChannelCmd)
 
-fullEraseDataCmd = config["cmd"]["Prefix"]+"FULL-ERASE-DATA"
+fullEraseDataCmd = cmdPrefix+"FULL-ERASE-DATA"
 fullEraseDataCmdLen = len(fullEraseDataCmd)
 
-helpCmd = config["cmd"]["Prefix"]+"help"
+helpCmd = cmdPrefix+"help"
 
 
 def ReadLocale(lang):
@@ -79,9 +89,9 @@ def ReadLocale(lang):
         setAdminChannelCmd=setAdminChannelCmd,
         fullEraseDataCmd=fullEraseDataCmd,
         regCmd=regCmd, loginCmd=loginCmd,
-        roleAdmin=config["role"]["Admin"],
-        roleReg=config["role"]["Reg"],
-        botAdminContacts=config["bot"]["AdminContacts"])
+        roleAdmin=roleAdmin,
+        roleReg=roleReg,
+        botAdminContacts=botAdminContacts)
 
 
 def CheckRole(roleName, roles):
@@ -220,7 +230,7 @@ class BotDiscord(discord.Client):
                 if result == True:
                     roles = message.guild.roles
                     for role in roles:
-                        if role.name == config["role"]["Reg"]:
+                        if role.name == roleReg:
                             await message.author.edit(roles=[role], reason=None)
                             break
 
@@ -264,7 +274,7 @@ class BotDiscord(discord.Client):
                     return
 
                 # Role check
-                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                if CheckRole(roleAdmin, message.author.roles) == False:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
@@ -291,7 +301,7 @@ class BotDiscord(discord.Client):
                     return
 
                 # Role check
-                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                if CheckRole(roleAdmin, message.author.roles) == False:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
@@ -312,7 +322,7 @@ class BotDiscord(discord.Client):
             # ## LIST ##
             if message.content.startswith(listidCmd):
                 # Role check
-                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                if CheckRole(roleAdmin, message.author.roles) == False:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
@@ -341,7 +351,7 @@ class BotDiscord(discord.Client):
                     return
 
                 # Role check
-                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                if CheckRole(roleAdmin, message.author.roles) == False:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
@@ -365,7 +375,7 @@ class BotDiscord(discord.Client):
             # ## set-admin-channel ##
             if message.content.startswith(setAdminChannelCmd):
                 # Role check
-                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                if CheckRole(roleAdmin, message.author.roles) == False:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
@@ -378,7 +388,7 @@ class BotDiscord(discord.Client):
             # ## full-erase-data ##
             if message.content.startswith(fullEraseDataCmd):
                 # Role check
-                if CheckRole(config["role"]["Admin"], message.author.roles) == False:
+                if CheckRole(roleAdmin, message.author.roles) == False:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
                     return
 
@@ -402,7 +412,7 @@ class BotDiscord(discord.Client):
 
 # Main
 if __name__ == "__main__":
-    ReadLocale(config["bot"]["Locale"])
+    ReadLocale(botLocale)
 
     client = BotDiscord()
-    client.run(config["bot"]["Token"])
+    client.run(botToken)
