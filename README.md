@@ -26,6 +26,7 @@ python3 ./main.py
 
 ## Documentation
 - [Global configuration](https://github.com/lcomrade/concierge-bot/blob/main/docs/global_configuration.md)
+- [Creating localization files](https://github.com/lcomrade/concierge-bot/blob/main/docs/create_locale.md)
 
 ## Bugs and Suggestion
 If you find a bug or have a suggestion, create an Issue [here](https://github.com/lcomrade/concierge-bot/issues)
