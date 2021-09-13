@@ -65,7 +65,7 @@ def ReadLocale(lang):
     with open(langFile, "r") as file:
         global locale
         locale = dict([])
-        
+
         for line in file.read().splitlines():
             splitLine = line.split(" == ")
             locale[splitLine[0]] = splitLine[1]
@@ -96,7 +96,7 @@ def GenInviteCode():
     codeLetters = string.ascii_uppercase
 
     inviteCode = ""
-    for i in range(8):
+    for _ in range(8):
         inviteCode = inviteCode+random.choice(codeLetters)
 
     return inviteCode
@@ -106,27 +106,26 @@ def WriteBase(serverID, nickname, code):
     serverDir = os.path.join("./data", str(serverID))
     if not os.path.isdir(serverDir):
         os.makedirs(serverDir)
-    
+
     with open(os.path.join(serverDir, "invites"), "a") as file:
         file.write(nickname+"####"+code+"\n")
 
 
 def ReadBase(serverID):
-    serverDir = os.path.join("./data", str(serverID))
-    if not os.path.isfile(serverDir+"/"+"invites"):
+    invitesFile = os.path.join("./data", str(serverID), "invites")
+    if not os.path.isfile(invitesFile):
         return []
-    
-    with open(os.path.join(serverDir, "invites"), "r") as file:
+
+    with open(invitesFile, "r") as file:
         return file.read()
-    
+
 
 def UseInviteCode(serverID, inviteCode):
     result = False
     nick = ""
 
-    serverDir = os.path.join("./data", str(serverID))
-    invitesFile = os.path.join(serverDir, "invites")
-    if not os.path.isfile(serverDir+"/"+"invites"):
+    invitesFile = os.path.join("./data", str(serverID), "invites")
+    if not os.path.isfile(invitesFile):
         return result, nick
 
 
@@ -134,11 +133,11 @@ def UseInviteCode(serverID, inviteCode):
     with open(invitesFile, "r") as file:
         for line in file.read().splitlines():
             splitLine = line.split("####")
-            
+
             if splitLine[1] == inviteCode:
                 result = True
                 nick = splitLine[0]
-                
+
             else:
                 newFile = newFile+line+"\n"
 
@@ -175,8 +174,7 @@ def WriteAdminChannel(serverID, channelID):
 
 
 def ReadAdminChannel(serverID, channelID):
-    serverDir = os.path.join("./data", str(serverID))
-    adminChannelFile = os.path.join(serverDir, "admin_channel")
+    adminChannelFile = os.path.join("./data", str(serverID), "admin_channel")
     if not os.path.isfile(adminChannelFile):
         return ""
 
@@ -188,12 +186,12 @@ def ReadAdminChannel(serverID, channelID):
 class BotDiscord(discord.Client):
     async def on_ready(self):
         print("Logged on as", self.user)
-    
+
     async def on_message(self, message):
         # Ignore DM messages
         if not message.guild:
             return
-    
+
         # Ignore this bot messages
         if message.author == self.user:
             return
@@ -206,19 +204,19 @@ class BotDiscord(discord.Client):
                 await message.channel.send(helpTxt)
                 return
 
-            
+
             # ## REG ##
             if message.content.startswith(regCmd):
                 arg = message.content[regCmdLen:]
-                
+
                 # Sinatxis check
-                if arg == "" or arg == " ":
+                if arg in ("", " "):
                     await message.channel.send(helpTxt)
                     return
 
-                
+
                 result, nick = UseInviteCode(message.guild.id, arg)
-                
+
                 if result == True:
                     roles = message.guild.roles
                     for role in roles:
@@ -255,13 +253,13 @@ class BotDiscord(discord.Client):
 
                 return
 
-            
+
             # ## GENCODE ##
             if message.content.startswith(gencodeCmd):
                 arg = message.content[gencodeCmdLen:]
-                
+
                 # Sinatxis check
-                if arg == "" or arg == " ":
+                if arg in ("", " "):
                     await message.channel.send(helpTxt)
                     return
 
@@ -286,9 +284,9 @@ class BotDiscord(discord.Client):
             # ## ADDUSER ##
             if message.content.startswith(adduserCmd):
                 arg = message.content[adduserCmdLen:]
-                
+
                 # Sinatxis check
-                if arg == "" or arg == " ":
+                if arg in ("", " "):
                     await message.channel.send(helpTxt)
                     return
 
@@ -305,7 +303,7 @@ class BotDiscord(discord.Client):
 
                 for line in arg.split(";; "):
                     WriteBase(message.guild.id, line, line)
-                    
+
                     await message.channel.send(message.guild.name+": "+adduserCmd+" "+line)
 
                 return
@@ -336,9 +334,9 @@ class BotDiscord(discord.Client):
             # ## DELID ##
             if message.content.startswith(delidCmd):
                 arg = message.content[delidCmdLen:]
-                
+
                 # Sinatxis check
-                if arg == "" or arg == " ":
+                if arg in ("", " "):
                     await message.channel.send(helpTxt)
                     return
 
