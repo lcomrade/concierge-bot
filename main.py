@@ -183,10 +183,10 @@ def WriteAdminChannel(serverID, channelID):
         file.write(str(channelID)+"\n")
 
 
-def ReadAdminChannel(serverID, channelID):
+def ReadAdminChannel(serverID):
     adminChannelFile = os.path.join("./data", str(serverID), "admin_channel")
     if not os.path.isfile(adminChannelFile):
-        return ""
+        return 0
 
     with open(adminChannelFile, "r") as file:
         return int(file.read().splitlines()[0])
@@ -234,9 +234,15 @@ class BotDiscord(discord.Client):
                             await message.author.edit(roles=[role], reason=None)
                             break
 
-                    await message.author.send(locale["{nick}, welcome to the {guild} server"].format(nick=nick, guild=message.guild.name))
+                    # Editing user rights
                     await message.author.edit(nick=nick, reason=None)
                     await message.delete()
+
+                    # Notifications
+                    await message.author.send(locale["{nick}, welcome to the {guild} server"].format(nick=nick, guild=message.guild.name))
+                    
+                    adminChannel = self.get_channel(ReadAdminChannel(message.guild.id))
+                    await adminChannel.send(locale["{discordName} registered on the server as {nick}"].format(discordName=message.author.name, nick=nick))
 
                 else:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["wrong secret word"])
@@ -254,9 +260,15 @@ class BotDiscord(discord.Client):
                             await message.author.edit(roles=[role], reason=None)
                             break
 
-                    await message.author.send(locale["{nick}, welcome to the {guild} server"].format(nick=nick, guild=message.guild.name))
+                    # Editing user rights
                     await message.author.edit(nick=nick, reason=None)
                     await message.delete()
+
+                    # Notifications
+                    await message.author.send(locale["{nick}, welcome to the {guild} server"].format(nick=nick, guild=message.guild.name))
+                    
+                    adminChannel = self.get_channel(ReadAdminChannel(message.guild.id))
+                    await adminChannel.send(locale["{discordName} logged on the server as {nick}. Role: {role}"].format(discordName=message.author.name, nick=nick, role=userRole))
 
                 else:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["you are not a trusted user"])
@@ -279,7 +291,7 @@ class BotDiscord(discord.Client):
                     return
 
                 # Channel check
-                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                if ReadAdminChannel(message.guild.id) != message.channel.id:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
@@ -306,7 +318,7 @@ class BotDiscord(discord.Client):
                     return
 
                 # Channel check
-                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                if ReadAdminChannel(message.guild.id) != message.channel.id:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
@@ -327,7 +339,7 @@ class BotDiscord(discord.Client):
                     return
 
                 # Channel check
-                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                if ReadAdminChannel(message.guild.id) != message.channel.id:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
@@ -356,7 +368,7 @@ class BotDiscord(discord.Client):
                     return
 
                 # Channel check
-                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                if ReadAdminChannel(message.guild.id) != message.channel.id:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 
@@ -393,7 +405,7 @@ class BotDiscord(discord.Client):
                     return
 
                 # Channel check
-                if ReadAdminChannel(message.guild.id, message.channel.id) != message.channel.id:
+                if ReadAdminChannel(message.guild.id) != message.channel.id:
                     await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
                     return
 

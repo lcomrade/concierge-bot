@@ -1,4 +1,6 @@
 {nick}, welcome to the {guild} server == {nick}, добро пожаловать на сервер {guild}
+{discordName} registered on the server as {nick} == {discordName} зарегистрирован на этом сервере как {nick}
+{discordName} logged on the server as {nick}. Role: {role} == {discordName} вошел на этот сервер как {nick}. Роль: {role}
 wrong secret word == неправильное секретное слово
 you are not a trusted user == вы не являетесь доверенным пользователем
 permission denied == доступ запрещён
