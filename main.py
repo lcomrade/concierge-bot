@@ -72,6 +72,7 @@ helpCmd = cmdPrefix+"help"
 def ReadLocale(lang):
     langFile = os.path.join("./locale", lang)
 
+    print("Load:", langFile)
     with open(langFile, "r") as file:
         global locale
         locale = dict([])
@@ -81,7 +82,9 @@ def ReadLocale(lang):
             locale[splitLine[0]] = splitLine[1]
 
 
-    with open(langFile+"_help", "r") as file:
+    langFileHelp = langFile+"_help"
+    print("Load:", langFileHelp)
+    with open(langFileHelp, "r") as file:
         global helpTxt
 
         helpTxt = file.read().format(adduserCmd=adduserCmd, gencodeCmd=gencodeCmd,
@@ -94,7 +97,14 @@ def ReadLocale(lang):
         botAdminContacts=botAdminContacts)
 
 
-    with open(langFile+"_welcome", "r") as file:
+    # Welcome msg
+    if os.path.isfile("./data/welcome"):
+        welcomeFile = "./data/welcome"
+    else:
+        welcomeFile = langFile+"_welcome"
+
+    print("Load:", welcomeFile)
+    with open(welcomeFile, "r") as file:
         global welcomeTxt
 
         welcomeTxt = file.read()
@@ -201,10 +211,9 @@ def ReadAdminChannel(serverID):
 # BOT
 class BotDiscord(discord.Client):
     async def on_ready(self):
-        print("Logged on as", self.user)
+        print("Logged on:", self.user)
 
     async def on_member_join(self, member):
-        print("Member joined")
         await member.send(welcomeTxt)
 
     async def on_message(self, message):
