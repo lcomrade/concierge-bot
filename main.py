@@ -94,6 +94,12 @@ def ReadLocale(lang):
         botAdminContacts=botAdminContacts)
 
 
+    with open(langFile+"_welcome", "r") as file:
+        global welcomeTxt
+
+        welcomeTxt = file.read()
+
+
 def CheckRole(roleName, roles):
     for role in roles:
         if role.name == roleName:
@@ -196,6 +202,10 @@ def ReadAdminChannel(serverID):
 class BotDiscord(discord.Client):
     async def on_ready(self):
         print("Logged on as", self.user)
+
+    async def on_member_join(self, member):
+        print("Member joined")
+        await member.send(welcomeTxt)
 
     async def on_message(self, message):
         # Ignore DM messages
@@ -426,5 +436,8 @@ class BotDiscord(discord.Client):
 if __name__ == "__main__":
     ReadLocale(botLocale)
 
-    client = BotDiscord()
+    intents = discord.Intents.default()
+    intents.members = True
+
+    client = BotDiscord(intents=intents)
     client.run(botToken)
