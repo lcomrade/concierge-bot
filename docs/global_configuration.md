@@ -31,6 +31,7 @@ Admin = Administrator
 Reg = User
 ```
 
+
 ## ./data/trusted_users
 This file is used by the `/login` command.
 
@@ -50,3 +51,9 @@ File example:
 000012345678900000####Super####Super User
 000000000123456789####Moderator####Somebody
 ```
+
+
+### ./data/welcome
+This file contains welcome for joined users in MarkDown format. If necessary, you can screen Discord MarkDown using `\`.
+
+If this file does not exist, the file will be used: `./locale/LOCALE_welcome`

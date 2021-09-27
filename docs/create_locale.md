@@ -31,12 +31,17 @@ LINE == TRANSLATION
 This file contains help for the bot in MarkDown format. If necessary, you can screen Discord MarkDown using `\`.
 
 
+### ./locale/LOCALE_welcome
+This file contains welcome for joined users in MarkDown format. If necessary, you can screen Discord MarkDown using `\`.
+
+
 # Practice
 **1.** Start by copying the locale files:
 
 ```
 cp ./locale/en_US ./locale/LOCALE
 cp ./locale/en_US_help ./locale/LOCALE_help
+cp ./locale/en_US_welcome ./locale/LOCALE_welcome
 ```
 
 **2.** Edit the translation in the files.
