@@ -25,6 +25,7 @@ import os
 import string
 import random
 import shutil
+from datetime import datetime
 import discord
 
 # Read config
@@ -118,6 +119,11 @@ def CheckRole(roleName, roles):
     return False
 
 
+def GetTmpCode():
+    dt = datetime.now()
+    return str(dt.microsecond)
+
+
 def GenInviteCode():
     codeLetters = string.ascii_uppercase
 
@@ -133,8 +139,14 @@ def WriteBase(serverID, nickname, code):
     if not os.path.isdir(serverDir):
         os.makedirs(serverDir)
 
-    with open(os.path.join(serverDir, "invites"), "a") as file:
+    # Write file
+    invitesFile = os.path.join(serverDir, "invites")
+    invitesFileTmp = os.path.join(serverDir, "invites.tmp"+GetTmpCode())
+    with open(invitesFileTmp, "a") as file:
         file.write(nickname+"####"+code+"\n")
+
+    # Move file
+    os.replace(invitesFileTmp, invitesFile)
 
 
 def ReadBase(serverID):
@@ -168,8 +180,13 @@ def UseInviteCode(serverID, inviteCode):
                 newFile = newFile+line+"\n"
 
 
-    with open(invitesFile, "w") as file:
+    # Write file
+    invitesFileTmp = os.path.join(serverDir, "invites.tmp"+GetTmpCode())
+    with open(invitesFileTmp, "w") as file:
         file.write(newFile)
+
+    # Move file
+    os.replace(invitesFileTmp, invitesFile)
 
     return result, nick
 
