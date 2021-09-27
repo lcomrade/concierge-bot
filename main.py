@@ -214,7 +214,34 @@ class BotDiscord(discord.Client):
         print("Logged on:", self.user)
 
     async def on_member_join(self, member):
-        await member.send(welcomeTxt)
+        try:
+            # Send welcome
+            await member.send(welcomeTxt)
+
+            # Check user
+            result, userRole, nick = GetTrustedUser(member.id)
+
+            if result == True:
+                roles = member.guild.roles
+                for role in roles:
+                    if role.name == userRole:
+                        await member.edit(roles=[role], reason=None)
+                        break
+
+                # Editing user rights
+                await member.edit(nick=nick, reason=None)
+
+                # Notifications
+                await member.send(locale["{nick}, welcome to the {guild} server"].format(nick=nick, guild=member.guild.name))
+                
+                adminChannel = self.get_channel(ReadAdminChannel(member.guild.id))
+                await adminChannel.send(locale["{discordName} logged on the server as {nick}. Role: {role}"].format(discordName=member.name, nick=nick, role=userRole))
+
+
+        except discord.errors.Forbidden as err:
+            adminChannel = self.get_channel(ReadAdminChannel(member.guild.id))
+            await adminChannel.send(locale["ERROR:"]+" "++" "+str(err))
+
 
     async def on_message(self, message):
         # Ignore DM messages
