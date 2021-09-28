@@ -19,6 +19,8 @@ COPY --from=build /root/.local /root/.local
 
 COPY . .
 
+RUN chmod +x /bot/*.sh
+
 VOLUME /bot/data
 
 CMD [ "python", "./main.py" ]
