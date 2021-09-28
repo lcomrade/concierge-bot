@@ -15,6 +15,12 @@ mkdir -p /opt/concierge-bot/data/
 
 # Configuration
 docker run -i -t -v /opt/concierge-bot/data:/bot/data lcomrade/concierge-bot python /bot/configure.py
+
+# Get systemd unit
+wget -O '/etc/systemd/system/concierge-bot.service' 'https://raw.githubusercontent.com/lcomrade/concierge-bot/main/init/concierge-bot.service'
+systemctl daemon-reload
+systemctl enable concierge-bot
+systemctl start concierge-bot
 ```
 
 ### Getting the bot token

@@ -1,0 +1,11 @@
+[Unit]
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run --pull always -t -v /opt/concierge-bot/data:/bot/data lcomrade/concierge-bot
+ExecStop=/usr/bin/docker stop lcomrade/concierge-bot
+
+[Install]
+WantedBy=multi-user.target
