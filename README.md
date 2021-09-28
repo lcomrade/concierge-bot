@@ -1,8 +1,8 @@
 [![Docker Hub](https://img.shields.io/docker/v/lcomrade/concierge-bot?sort=date&style=flat-square)](https://hub.docker.com/r/lcomrade/concierge-bot)
 [![License](https://img.shields.io/github/license/lcomrade/concierge-bot?style=flat-square)](https://github.com/lcomrade/concierge-bot/blob/main/LICENSE)
 
-**concierge-bot** is a Discord bot that acts as a concierge.
-It lets members onto the Discord server by correct niks or by invite codes.
+**Concierge Bot** is a Discord bot that acts as a concierge.
+It lets members onto the Discord server by correct nicks or by invite codes.
 
 ## Using
 ### Bot installation
@@ -37,6 +37,7 @@ docker run -i -t -v /opt/concierge-bot/data:/bot/data lcomrade/concierge-bot pyt
 
 ## Documentation
 - [Global configuration](https://github.com/lcomrade/concierge-bot/blob/main/docs/global_configuration.md)
+- [datamod.sh tool](https://github.com/lcomrade/concierge-bot/blob/main/docs/datamod_tool.md)
 - [Creating localization files](https://github.com/lcomrade/concierge-bot/blob/main/docs/create_locale.md)
 
 ## Bugs and Suggestion
