@@ -2,6 +2,12 @@ name: CI to Docker Hub
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - ".github/**"
+      - ".dockerignore"
+      - ".gitignore"
+      - "README.md"
+      - "docs/**"
 
 jobs:
   build:
