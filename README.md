@@ -6,19 +6,26 @@ It lets members onto the Discord server by correct nicks or by invite codes.
 
 ## Using
 ### Bot installation
+1. Installing Docker:
 ```
-# Installing Docker
 apt install docker docker.io
-
-# Creating a data dir
+```
+2. Creating a data dir
+```
 mkdir -p /opt/concierge-bot/data/
-
-# Configuration
+```
+3. Creating configuration files
+```
 docker run -i -t -v /opt/concierge-bot/data:/bot/data lcomrade/concierge-bot python /bot/configure.py
-
-# Get systemd unit
+```
+4. Adding systemd unit
+```
+rm -f /etc/systemd/system/concierge-bot.service
 wget -O '/etc/systemd/system/concierge-bot.service' 'https://raw.githubusercontent.com/lcomrade/concierge-bot/main/init/concierge-bot.service'
 systemctl daemon-reload
+```
+5. Enabling and starting systemd service
+```
 systemctl enable concierge-bot
 systemctl start concierge-bot
 ```
