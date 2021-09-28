@@ -135,7 +135,7 @@ def GenInviteCode():
 
 
 def WriteBase(serverID, nickname, code):
-    serverDir = os.path.join("./data", str(serverID))
+    serverDir = os.path.join("./data/guilds", str(serverID))
     if not os.path.isdir(serverDir):
         os.makedirs(serverDir)
 
@@ -150,7 +150,7 @@ def WriteBase(serverID, nickname, code):
 
 
 def ReadBase(serverID):
-    invitesFile = os.path.join("./data", str(serverID), "invites")
+    invitesFile = os.path.join("./data/guilds", str(serverID), "invites")
     if not os.path.isfile(invitesFile):
         return []
 
@@ -162,7 +162,7 @@ def UseInviteCode(serverID, inviteCode):
     result = False
     nick = ""
 
-    invitesFile = os.path.join("./data", str(serverID), "invites")
+    invitesFile = os.path.join("./data/guilds", str(serverID), "invites")
     if not os.path.isfile(invitesFile):
         return result, nick
 
@@ -208,7 +208,7 @@ def GetTrustedUser(userID):
 
 
 def WriteAdminChannel(serverID, channelID):
-    serverDir = os.path.join("./data", str(serverID))
+    serverDir = os.path.join("./data/guilds", str(serverID))
     if not os.path.isdir(serverDir):
         os.makedirs(serverDir)
 
@@ -217,7 +217,7 @@ def WriteAdminChannel(serverID, channelID):
 
 
 def ReadAdminChannel(serverID):
-    adminChannelFile = os.path.join("./data", str(serverID), "admin_channel")
+    adminChannelFile = os.path.join("./data/guilds", str(serverID), "admin_channel")
     if not os.path.isfile(adminChannelFile):
         return 0
 
@@ -473,7 +473,7 @@ class BotDiscord(discord.Client):
                     return
 
                 try:
-                    shutil.rmtree(os.path.join("./data", str(message.guild.id)))
+                    shutil.rmtree(os.path.join("./data/guilds", str(message.guild.id)))
                     await message.channel.send(locale["Information about Discord server {guild} has been completely removed from the {selfUser} bot server"].format(guild=message.guild.name ,selfUser=str(self.user)))
 
                 except Exception as err:
