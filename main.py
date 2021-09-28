@@ -181,7 +181,7 @@ def UseInviteCode(serverID, inviteCode):
 
 
     # Write file
-    invitesFileTmp = os.path.join(serverDir, "invites.tmp"+GetTmpCode())
+    invitesFileTmp = os.path.join("./data/guilds", str(serverID), "invites.tmp"+GetTmpCode())
     with open(invitesFileTmp, "w") as file:
         file.write(newFile)
 
@@ -235,7 +235,7 @@ class BotDiscord(discord.Client):
             # Send welcome
             await member.send(welcomeTxt)
 
-            # Check user
+            # Check user (LOGIN)
             result, userRole, nick = GetTrustedUser(member.id)
 
             if result == True:
@@ -253,6 +253,28 @@ class BotDiscord(discord.Client):
                 
                 adminChannel = self.get_channel(ReadAdminChannel(member.guild.id))
                 await adminChannel.send(locale["{discordName} logged on the server as {nick}. Role: {role}"].format(discordName=member.name, nick=nick, role=userRole))
+
+                return
+
+
+            # Check user (REG)
+            result, nick = UseInviteCode(member.guild.id, member.name)
+
+            if result == True:
+                roles = member.guild.roles
+                for role in roles:
+                    if role.name == roleReg:
+                        await member.edit(roles=[role], reason=None)
+                        break
+
+                # Editing user rights
+                await member.edit(nick=nick, reason=None)
+
+                # Notifications
+                await member.send(locale["{nick}, welcome to the {guild} server"].format(nick=nick, guild=member.guild.name))
+                
+                adminChannel = self.get_channel(ReadAdminChannel(member.guild.id))
+                await adminChannel.send(locale["{discordName} registered on the server as {nick}"].format(discordName=member.name, nick=nick))
 
 
         except discord.errors.Forbidden as err:
