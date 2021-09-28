@@ -1,3 +1,4 @@
+[![Docker Hub](https://img.shields.io/docker/v/lcomrade/concierge-bot?sort=date&style=flat-square)](https://hub.docker.com/r/lcomrade/concierge-bot)
 [![License](https://img.shields.io/github/license/lcomrade/concierge-bot?style=flat-square)](https://github.com/lcomrade/concierge-bot/blob/main/LICENSE)
 
 **concierge-bot** is a Discord bot that acts as a concierge.
@@ -6,14 +7,14 @@ It lets members onto the Discord server by correct niks or by invite codes.
 ## Using
 ### Bot installation
 ```
-# Installing dependencies
-pip3 install --no-cache-dir -r requirements.txt
+# Installing Docker
+apt install docker docker.io
 
-# Creating config (./data/config)
-python3 ./configure.py
+# Creating a data dir
+mkdir -p /opt/concierge-bot/data/
 
-# Running
-python3 ./main.py
+# Configuration
+docker run -i -t -v /opt/concierge-bot/data:/bot/data lcomrade/concierge-bot python /bot/configure.py
 ```
 
 ### Getting the bot token
