@@ -11,3 +11,5 @@ Channel {channelName} is now used for {selfUser} bot administration == Channel *
 Information about Discord server {guild} has been completely removed from the {selfUser} bot server == **Information** about Discord server {guild} has been completely **removed** from the {selfUser} bot server
 ERROR: == **ERROR:**
 ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually. == **ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually.**
+Contact the bot administrator and tell him about the error. == Contact the bot administrator and tell him about the error.
+Check the access rights of the bot. == Check the access rights of the bot.

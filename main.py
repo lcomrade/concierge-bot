@@ -20,6 +20,7 @@
   along with concierge-bot.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
+import traceback
 import configparser
 import os
 import string
@@ -225,6 +226,31 @@ def ReadAdminChannel(serverID):
         return int(file.read().splitlines()[0])
 
 
+def GetErrText(err, description):
+    errList = traceback.extract_tb(err.__traceback__)
+    errList = traceback.format_list(errList)
+    errFormat = ""
+    for line in errList:
+        errFormat = errFormat + line
+    
+    errText = """{ERROR}
+`{err}`
+`{errMsg}`
+
+{tellAboutError}
+*{contacts}*
+**======**
+{description}
+    """.format(ERROR=locale["ERROR:"],
+    err=errFormat,
+    errMsg=str(err),
+    tellAboutError=locale["Contact the bot administrator and tell him about the error."],
+    contacts=botAdminContacts,
+    description=description
+    )
+    return errText
+
+
 # BOT
 class BotDiscord(discord.Client):
     async def on_ready(self):
@@ -279,7 +305,7 @@ class BotDiscord(discord.Client):
 
         except discord.errors.Forbidden as err:
             adminChannel = self.get_channel(ReadAdminChannel(member.guild.id))
-            await adminChannel.send(locale["ERROR:"]+" "++" "+str(err))
+            await adminChannel.send(GetErrText(err, locale["Check the access rights of the bot."]))
 
 
     async def on_message(self, message):
@@ -504,7 +530,7 @@ class BotDiscord(discord.Client):
 
 
         except discord.errors.Forbidden as err:
-            await message.channel.send(locale["ERROR:"]+" "+str(err))
+            await message.channel.send(GetErrText(err, locale["Check the access rights of the bot."]))
 
 
 # Main
