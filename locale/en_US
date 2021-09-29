@@ -13,3 +13,4 @@ ERROR: == **ERROR:**
 ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually. == **ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually.**
 Contact the bot administrator and tell him about the error. == Contact the bot administrator and tell him about the error.
 Check the access rights of the bot. == Check the access rights of the bot.
+This bot does not respond to direct messages == This bot does not respond to DM messages

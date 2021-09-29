@@ -309,12 +309,13 @@ class BotDiscord(discord.Client):
 
 
     async def on_message(self, message):
-        # Ignore DM messages
-        if not message.guild:
-            return
-
         # Ignore this bot messages
         if message.author == self.user:
+            return
+
+        # Ignore DM
+        if not message.guild:
+            await message.channel.send(locale["This bot does not respond to direct messages"])
             return
 
 
