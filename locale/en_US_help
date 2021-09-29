@@ -16,6 +16,9 @@
 **{setAdminChannelCmd}**
     Sets the current channel as a channel for administration commands. There can only be 1 such channel.
 
+**{selfCheckCmd}**
+    Checks if the Discord server is configured correctly.
+
 *User commands:*
 **{regCmd}** SECRET_WORD
     The secret word should be given to you by the administrator.

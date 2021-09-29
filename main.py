@@ -63,7 +63,8 @@ delidCmd = cmdPrefix+"delid"
 delidCmdLen = len(delidCmd)+1
 
 setAdminChannelCmd = cmdPrefix+"set-admin-channel"
-setAdminChannelCmdLen = len(setAdminChannelCmd)
+
+selfCheckCmd = cmdPrefix+"self-check"
 
 helpCmd = cmdPrefix+"help"
 
@@ -89,6 +90,7 @@ def ReadLocale(lang):
         helpTxt = file.read().format(adduserCmd=adduserCmd, gencodeCmd=gencodeCmd,
         listidCmd=listidCmd, delidCmd=delidCmd,
         setAdminChannelCmd=setAdminChannelCmd,
+        selfCheckCmd=selfCheckCmd,
         regCmd=regCmd, loginCmd=loginCmd,
         roleAdmin=roleAdmin,
         roleReg=roleReg,
@@ -506,6 +508,90 @@ class BotDiscord(discord.Client):
                 await message.channel.send(locale["Channel {channelName} is now used for {selfUser} bot administration"].format(channelName=message.channel.name, selfUser=str(self.user)))
 
                 return
+
+
+            # ## self-check ##
+            if message.content.startswith(selfCheckCmd):
+                # Checking the existence of admin channel
+                adminChannelChk = "NOT FOUND"
+                if ReadAdminChannel(message.guild.id) != 0:
+                    adminChannelChk = "OK"
+
+                # Checking access rights
+                selfReadMessages = "PERMISSION DENIED"
+                selfSendMessages = "PERMISSION DENIED"
+                selfManageMessages = "PERMISSION DENIED"
+                selfManageNicks = "PERMISSION DENIED"
+                selfManageRoles = "PERMISSION DENIED"
+                
+                selfRole = message.guild.self_role.permissions
+                if selfRole.administrator == True:
+                    selfReadMessages = "OK"
+                    selfSendMessages = "OK"
+                    selfManageMessages = "OK"
+                    selfManageNicks = "OK"
+                    selfManageRoles = "OK"
+
+                else:
+                    if selfRole.read_messages == True:
+                        selfReadMessages = "OK"
+                        
+                    if selfRole.send_messages == True:
+                        selfSendMessages = "OK"
+
+                    if selfRole.manage_messages == True:
+                        selfManageMessages = "OK"
+
+                    if selfRole.manage_nicknames == True:
+                        selfManageNicks = "OK"
+                        
+                    if selfRole.manage_roles == True:
+                        selfManageRoles = "OK"
+                
+                # Checking the existence of roles
+                roleRegChk = "NOT FOUND"
+                roleAdminChk = "NOT FOUND"
+
+                roles = message.guild.roles
+                for role in roles:
+                    if role.name == roleReg:
+                        roleRegChk = "OK"
+
+                    if role.name == roleAdmin:
+                        roleAdminChk = "OK"
+
+                    if roleRegChk == "OK" and roleAdminChk == "OK":
+                        break
+
+
+                await message.channel.send("""
+**## PERMISSIONS ##**
+**[{readMessages}]** Read messages
+**[{sendMessages}]** Send messages
+**[{manageMessages}]** Manage messages
+**[{manageNicks}]** Manage nicknames
+**[{manageRoles}]** Manage roles
+
+**## CHANNELS ##**
+**[{adminChannelChk}]** Admin channel
+
+**## ROLES ##**
+**[{roleRegChk}]** User role ({roleReg})
+**[{roleAdminChk}]** Admin role ({roleAdmin})
+                """.format(
+                readMessages=selfReadMessages,
+                sendMessages=selfSendMessages,
+                manageMessages=selfManageMessages,
+                manageNicks=selfManageNicks,
+                manageRoles=selfManageRoles,
+                adminChannelChk=adminChannelChk,
+                roleRegChk=roleRegChk,
+                roleReg=roleReg,
+                roleAdminChk=roleAdminChk,
+                roleAdmin=roleAdmin))
+
+                return
+
 
         except discord.errors.Forbidden as err:
             await message.channel.send(GetErrText(err, locale["Check the access rights of the bot."]))
