@@ -65,9 +65,6 @@ delidCmdLen = len(delidCmd)+1
 setAdminChannelCmd = cmdPrefix+"set-admin-channel"
 setAdminChannelCmdLen = len(setAdminChannelCmd)
 
-fullEraseDataCmd = cmdPrefix+"FULL-ERASE-DATA"
-fullEraseDataCmdLen = len(fullEraseDataCmd)
-
 helpCmd = cmdPrefix+"help"
 
 
@@ -92,7 +89,6 @@ def ReadLocale(lang):
         helpTxt = file.read().format(adduserCmd=adduserCmd, gencodeCmd=gencodeCmd,
         listidCmd=listidCmd, delidCmd=delidCmd,
         setAdminChannelCmd=setAdminChannelCmd,
-        fullEraseDataCmd=fullEraseDataCmd,
         regCmd=regCmd, loginCmd=loginCmd,
         roleAdmin=roleAdmin,
         roleReg=roleReg,
@@ -255,6 +251,9 @@ def GetErrText(err, description):
 class BotDiscord(discord.Client):
     async def on_ready(self):
         print("Logged on:", self.user)
+
+    async def on_guild_remove(self, guild):
+        shutil.rmtree(os.path.join("./data/guilds", str(guild.id)))
 
     async def on_member_join(self, member):
         try:
@@ -507,28 +506,6 @@ class BotDiscord(discord.Client):
                 await message.channel.send(locale["Channel {channelName} is now used for {selfUser} bot administration"].format(channelName=message.channel.name, selfUser=str(self.user)))
 
                 return
-
-
-            # ## full-erase-data ##
-            if message.content.startswith(fullEraseDataCmd):
-                # Role check
-                if CheckRole(roleAdmin, message.author.roles) == False:
-                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["permission denied"])
-                    return
-
-                # Channel check
-                if ReadAdminChannel(message.guild.id) != message.channel.id:
-                    await message.channel.send("<@"+str(message.author.id)+">, "+locale["this is not bot administration channel"])
-                    return
-
-                try:
-                    shutil.rmtree(os.path.join("./data/guilds", str(message.guild.id)))
-                    await message.channel.send(locale["Information about Discord server {guild} has been completely removed from the {selfUser} bot server"].format(guild=message.guild.name ,selfUser=str(self.user)))
-
-                except Exception as err:
-                    await message.channel.send(str(err))
-                    await message.channel.send(locale["ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually."])
-
 
         except discord.errors.Forbidden as err:
             await message.channel.send(GetErrText(err, locale["Check the access rights of the bot."]))

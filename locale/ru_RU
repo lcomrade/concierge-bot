@@ -8,8 +8,6 @@ this is not bot administration channel == это не канал для адми
 ID list is empty == список идентефикаторов пуст
 not found == не существует
 Channel {channelName} is now used for {selfUser} bot administration == Канал **{channelName}** теперь используется для администрирования бота **{selfUser}**.
-Information about Discord server {guild} has been completely removed from the {selfUser} bot server == **Информация** о Discord сервере {guild} была полностью **удалена** с сервера бота {selfUser}.
-ERROR: Discord server information could not be deleted. Contact the bot administrator and ask him to delete the information manually. == **ОШИБКА: Информация о сервере Discord не может быть удалена. Свяжитесь с администратором бота и попросите его удалить информацию вручную.**
 ERROR: == **ОШИБКА:**
 Contact the bot administrator and tell him about the error. == Свяжитесь с администратором бота и сообщите ему об ошибке.
 Check the access rights of the bot. == Проверьте права доступа бота.

@@ -16,10 +16,6 @@
 **{setAdminChannelCmd}**
     Sets the current channel as a channel for administration commands. There can only be 1 such channel.
 
-**{fullEraseDataCmd}**
-    Deletes information about this Discord server from the server on which the bot is running.
-    If you just kick the bot from the server this information will not be deleted.
-
 *User commands:*
 **{regCmd}** SECRET_WORD
     The secret word should be given to you by the administrator.
