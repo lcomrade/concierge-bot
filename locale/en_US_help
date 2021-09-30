@@ -19,6 +19,9 @@
 **{selfCheckCmd}**
     Checks if the Discord server is configured correctly.
 
+**{buildInfoCmd}**
+    Outputs information about the build.
+
 *User commands:*
 **{regCmd}** SECRET_WORD
     The secret word should be given to you by the administrator.

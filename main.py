@@ -67,6 +67,7 @@ setAdminChannelCmd = cmdPrefix+"set-admin-channel"
 selfCheckCmd = cmdPrefix+"self-check"
 
 helpCmd = cmdPrefix+"help"
+buildInfoCmd = cmdPrefix+"build-info"
 
 
 def ReadLocale(lang):
@@ -91,6 +92,7 @@ def ReadLocale(lang):
         listidCmd=listidCmd, delidCmd=delidCmd,
         setAdminChannelCmd=setAdminChannelCmd,
         selfCheckCmd=selfCheckCmd,
+        buildInfoCmd=buildInfoCmd,
         regCmd=regCmd, loginCmd=loginCmd,
         roleAdmin=roleAdmin,
         roleReg=roleReg,
@@ -108,6 +110,16 @@ def ReadLocale(lang):
         global welcomeTxt
 
         welcomeTxt = file.read()
+
+
+def ReadBuildInfo():
+    global buildInfo
+    try:
+        with open("./build.info", "r") as file:
+            buildInfo = file.read()
+            
+    except FileNotFoundError:
+        buildInfo = "**ERROR:** No build information was found."
 
 
 def CheckRole(roleName, roles):
@@ -333,6 +345,11 @@ class BotDiscord(discord.Client):
             # ## HELP ##
             if message.content.startswith(helpCmd):
                 await message.channel.send(helpTxt)
+                return
+
+            # ## build-info ##
+            if message.content.startswith(buildInfoCmd):
+                await message.channel.send(buildInfo)
                 return
 
 
@@ -608,6 +625,7 @@ class BotDiscord(discord.Client):
 # Main
 if __name__ == "__main__":
     ReadLocale(botLocale)
+    ReadBuildInfo()
 
     intents = discord.Intents.default()
     intents.members = True
