@@ -138,11 +138,19 @@ def WriteBase(serverID, nickname, code):
     if not os.path.isdir(serverDir):
         os.makedirs(serverDir)
 
-    # Write file
+    # Read file
     invitesFile = os.path.join(serverDir, "invites")
+    try:
+        with open(invitesFile, "r") as file:
+            oldFile = file.read()
+            
+    except FileNotFoundError:
+        oldFile = ""
+
+    # Write file
     invitesFileTmp = os.path.join(serverDir, "invites.tmp"+GetTmpCode())
-    with open(invitesFileTmp, "a") as file:
-        file.write(nickname+"####"+code+"\n")
+    with open(invitesFileTmp, "w") as file:
+        file.write(oldFile+nickname+"####"+code+"\n")
 
     # Move file
     os.replace(invitesFileTmp, invitesFile)
