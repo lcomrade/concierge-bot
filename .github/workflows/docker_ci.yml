@@ -19,7 +19,7 @@ jobs:
 
       - name: Create Build Info
         run: |-
-          echo "Build date: $(date '+%Y%m%d %H:%M')" > ./build.info
+          echo "Build date: $(date '+%d-%m-%Y %H:%M')" > ./build.info
           echo "Build type: Official Docker Image (lcomrade/concierge-bot)" >> ./build.info
           echo "CI: GitHub Actions" >> ./build.info
           echo "" >> ./build.info
