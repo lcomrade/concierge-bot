@@ -1,6 +1,6 @@
-{nick}, welcome to the {guild} server == {nick}, welcome to the {guild} server
-{discordName} registered on the server as {nick} == {discordName} registered on the server as {nick}
-{discordName} logged on the server as {nick}. Role: {role} == {discordName} logged on the server as {nick}. Role: {role}
+{nick}, welcome to the {guild} server == {nick}, welcome to the {guild} server!
+{discordName} registered on the server as {nick} == **{discordName} registered** on the server **as {nick}**
+{discordName} logged on the server as {nick}. Role: {role} == **{discordName} logged** on the server **as {nick}**. Role: **{role}**
 wrong secret word == wrong secret word
 you are not a trusted user == you are not a trusted user
 permission denied == permission denied
