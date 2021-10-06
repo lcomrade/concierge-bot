@@ -1,4 +1,5 @@
-[![Docker Hub](https://img.shields.io/docker/v/lcomrade/concierge-bot?sort=date&style=flat-square)](https://hub.docker.com/r/lcomrade/concierge-bot)
+[![Docker Hub](https://img.shields.io/docker/v/lcomrade/concierge-bot?label=docker&sort=date&style=flat-square)](https://hub.docker.com/r/lcomrade/concierge-bot)
+[![Docker Hub Pulls](https://img.shields.io/docker/pulls/lcomrade/concierge-bot?style=flat-square)](https://hub.docker.com/r/lcomrade/concierge-bot)
 [![License](https://img.shields.io/github/license/lcomrade/concierge-bot?style=flat-square)](https://github.com/lcomrade/concierge-bot/blob/main/LICENSE)
 
 **Concierge Bot** is a Discord bot that acts as a concierge.
