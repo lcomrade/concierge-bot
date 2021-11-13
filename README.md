@@ -13,11 +13,11 @@ apt install docker docker.io
 ```
 2. Creating a data dir
 ```
-mkdir -p /opt/concierge-bot/data/
+mkdir -p /var/lib/concierge-bot/
 ```
 3. Creating configuration files
 ```
-docker run -i -t -v /opt/concierge-bot/data:/bot/data lcomrade/concierge-bot python /bot/configure.py
+docker run -i -t -v /var/lib/concierge-bot:/bot/data lcomrade/concierge-bot python /bot/configure.py
 ```
 4. Adding systemd unit
 ```
